@@ -42,7 +42,7 @@ class Deploy : Plugin<Project> {
 
                         pom {
                             name.set(Library.NAME)
-                            description.set("Coroutine-based Sketchware Manager JVM Library.")
+                            description.set(Library.DESCRIPTION)
                         }
 
                         from(components["kotlin"])
