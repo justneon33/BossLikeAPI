@@ -24,30 +24,6 @@ dependencies {
     implementation("fun.kotlingang.bosslike.api:BossLike:0.0.1")
 }
 ```
-## 🚴 Примеры использования
-#### Выполнение заданий:
-```kotlin
-val client = BossLikeClient("TEST-API-KEY")
-// получаем все привязанные соц.сети
-val socials = client.getSocials()
-// проверяем авторизован ли телеграмм
-if(socials.data?.any {
-    it.socialType == SocialNetworkType.TELEGRAM.id } != true) {
-    throw RuntimeException("Телега не привязана")
-}
-// получаем задания телеграмм
-val telegramTask = client.getTasks(SocialNetworkType.TELEGRAM, TaskType.ALL).get(0)
-// инициализируем задание
-val initTask = client.initializeTask(telegramTasks.data!!.id)
-// выполняем задание с помощью своих средств
-// проверяем задание
-client.checkTask(telegramTasks.data!!.id).onSuccess {
-    // задание завершено
-}.onError { status, errors ->
-    // логируем ошибки
-    println("#$status: ${errors.toString()}")
-}
-```
 #### Пример
 К примеру, давайте создадим новый аккаунт.
 ```kotlin
