@@ -1,0 +1,10 @@
+/build/
+/.idea
+/buildSrc/build
+deploy.properties
+/.gradle
+/buildSrc/.gradle
+/gradle
+gradlew
+gradlew.bat
+/src/jvmTest
