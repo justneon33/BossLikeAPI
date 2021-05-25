@@ -12,10 +12,10 @@ data class Response<out TBody>(
     /**
      * Invokes on success.
      */
-    inline fun handleSuccess(consumer: (TBody) -> Unit) = data?.run(consumer) ?: Unit
+    inline fun runOnSuccess(consumer: (TBody) -> Unit) = apply { data?.run(consumer) }
 
     /**
      * Invokes on error.
      */
-    inline fun handleErrors(consumer: (List<APIError>) -> Unit) = errors?.run(consumer) ?: Unit
+    inline fun runOnError(consumer: (List<APIError>) -> Unit) = apply { errors?.run(consumer) }
 }
