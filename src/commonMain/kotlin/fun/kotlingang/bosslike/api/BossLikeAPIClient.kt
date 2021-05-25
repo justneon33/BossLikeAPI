@@ -2,12 +2,16 @@ package `fun`.kotlingang.bosslike.api
 
 import `fun`.kotlingang.bosslike.entities.*
 import `fun`.kotlingang.bosslike.internal.extensions.putDefaults
+import `fun`.kotlingang.bosslike.internal.serializers.identifiedEnumSerializer
 import io.ktor.client.*
-import io.ktor.client.features.json.*
+import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 
 class BossLikeAPIClient(
     var config: APIConfig,
@@ -16,9 +20,14 @@ class BossLikeAPIClient(
 
     private val client = HttpClient {
         install(JsonFeature) {
-            serializer = KotlinxSerializer()
+            serializer = KotlinxSerializer(Json {
+                serializersModule = SerializersModule {
+                    contextual(identifiedEnumSerializer<TaskType>())
+                    contextual(identifiedEnumSerializer<SocialType>())
+                }
+            })
+            expectSuccess = false
         }
-        expectSuccess = false
     }
 
     /**
