@@ -1,6 +1,10 @@
+[![Hits-of-Code](https://hitsofcode.com/github/y9neon/BossLikeAPI)](https://hitsofcode.com/github/y9neon/BossLikeAPI/view)
+[![Last Version](https://badge.kotlingang.fun/maven/fun/kotlingang/bosslike/api/BossLike)](https://maven.kotlingang.fun/fun/kotlingang/bosslike/api/BossLike)
+
 # BossLike Multiplatform API Library
 Мультиплатформенная библиотека для взаимодействия с BossLike API (BotAPI).
 ## 🛠 Установка (Gradle)
+`$version` - должно быть взято со значка выше.
 ### Groovy:
 ```groovy
 repositories {
@@ -10,7 +14,7 @@ repositories {
 И так же добавляем в вашем модуле:
 ```groovy
 dependencies {
-    implementation 'fun.kotlingang.bosslike.api:BossLike:0.0.1'
+    implementation 'fun.kotlingang.bosslike.api:BossLike:$version'
 }
 ```
 ### Kotlin:
@@ -21,24 +25,31 @@ repositories {
 ```
 ```kotlin
 dependencies {
-    implementation("fun.kotlingang.bosslike.api:BossLike:0.0.1")
+    implementation("fun.kotlingang.bosslike.api:BossLike:$version")
 }
 ```
 #### Пример
-К примеру, давайте создадим новый аккаунт.
 ```kotlin
-val client = BossLikeAPIClient(APIConfig(
-    apiKey = "API ключ пользователя",
-    softwareLicenseKey = "Лицензионный ключ вашего софта",
-    deviceId = UUID.randomUUID().toString(),
-    userAgent = UserAgent("APPLICATION_NAME", "1.0", "Windows", "10", DeviceType.Desktop)
-))
-client.createUser("email@email.net", "p@\$\$w0rd").apply {
-    handleSuccess {
-        println("Успешно! Id пользователя: ${it.user.id}")
+val client = BossLikeAPIClient(APIConfig(/* ... */))
+client.createUser(email ="me@me.me", password = "sure").runOnSuccess {
+    println("Success! User's token: ${it.token.key}")
+}.runOnError { errors: List<APIError> ->
+    errors.forEach(::println)
+}
+
+// получаем задания
+client.getTasks(SocialType.Telegram, TaskType.SUBSCRIBE).runOnSuccess {
+    val taskId = it.items.first().id
+    client.takeTask(taskId).runOnSuccess { details: TaskDetails ->
+        println("Задание по ссылке ${details.url} выполняется")
+        // выполняем своими силами
+        /* ... */
+        // проверяем
+        println(client.verifyTask(taskId).success)
+    }.runOnError {
+        println("Ошибка при инициализации выполнения")
     }
-    handleErrors {
-        println("При вызове произошла ошибка! $it")
-    }
+}.runOnError {
+    println("Ошибка при получении заданий!")
 }
 ```
